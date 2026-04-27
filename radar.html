@@ -1,0 +1,134 @@
+                <!-- UI FOR MODULE 2 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNMAPPED | AI Radar</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="glass-nav profile-bar">
+        <div class="nav-content">
+            <div class="logo">UNMAPPED<span>.</span></div>
+            <div class="nav-links"><a href="index.html">Back to Dashboard</a></div>
+        </div>
+    </nav>
+
+    <section class="module-section" style="padding-top: 8rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2>02. AI Resilience Report</h2>
+                <p>Select your global context and the skills from your portfolio to generate a 3-part resilience analysis.</p>
+            </div>
+
+            <div class="glass-card" style="margin-bottom: 2rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <label style="color: var(--text-dim); display: block; margin-bottom: 10px;">1. Global Context (Country)</label>
+                        <input type="text" id="radar-country" placeholder="Enter country (e.g. Nigeria, India)" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="color: var(--text-dim); display: block; margin-bottom: 10px;">2. Select Saved Skills to Analyze</label>
+                        <div id="radar-skills-container" style="background: #1a1a1f; padding: 1rem; border-radius: 12px; border: 1px solid var(--border); max-height: 150px; overflow-y: auto;">
+                            No skills mapped yet. Go back to Dashboard.
+                        </div>
+                    </div>
+                </div>
+                <button onclick="generateReport()" style="margin-top: 2rem; width: 100%; justify-content: center;">Generate Global Report</button>
+                <div id="radar-error" style="color: #ff3366; margin-top: 10px; text-align: center;"></div>
+            </div>
+
+            <div id="report-output" style="display: none; grid-template-columns: 1fr; gap: 2rem;">
+                
+                <div class="glass-card" style="text-align: center;">
+                    <h3>Part 1: Overall Resilience Prediction</h3>
+                    <div class="progress-container" style="max-width: 500px; margin: 1.5rem auto;"><div id="res-bar" class="progress-fill"></div></div>
+                    <p id="res-percent" style="font-size: 2rem; font-weight: 800; color: var(--accent);">0%</p>
+                    <p style="color: var(--text-dim);">Vulnerability to Automation</p>
+                </div>
+
+                <div class="glass-card">
+                    <h3>Part 2: Skill Impact & Needs</h3>
+                    <p id="res-impacts" style="line-height: 1.8; color: #ddd;"></p>
+                </div>
+
+                <div class="glass-card">
+                    <h3>Part 3: 10-Year Future Scope</h3>
+                    <p id="res-future" style="line-height: 1.8; color: #ddd;"></p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        lucide.createIcons();
+        let savedSkills = JSON.parse(localStorage.getItem('unmapped_skills')) || [];
+
+        
+        window.onload = function() {
+            const container = document.getElementById('radar-skills-container');
+            if (savedSkills.length > 0) {
+                container.innerHTML = savedSkills.map((s, i) => `
+                    <label style="display: block; margin-bottom: 8px; cursor: pointer;">
+                        <input type="checkbox" class="skill-cb" value="${s.formal}"> ${s.formal}
+                    </label>
+                `).join('');
+            }
+        };
+
+        async function generateReport() {
+    const country = document.getElementById('radar-country').value.trim();
+    const checkboxes = document.querySelectorAll('.skill-cb:checked');
+    const selectedSkills = Array.from(checkboxes).map(cb => cb.value);
+    const errDiv = document.getElementById('radar-error');
+
+    if (!country || selectedSkills.length === 0) {
+        errDiv.innerText = "Please provide both country and skills.";
+        return;
+    }
+
+    errDiv.innerText = "Synchronizing 3-part global analysis...";
+    document.getElementById('report-output').style.display = "grid";
+
+    
+    document.getElementById('res-impacts').innerText = "Loading impact analysis...";
+    document.getElementById('res-future').innerText = "Generating future scope...";
+
+    try {
+
+        const [riskRes, impactRes, futureRes] = await Promise.all([
+            fetch('http://127.0.0.1:5000/radar-risk', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ country, skills: selectedSkills }) }),
+            fetch('http://127.0.0.1:5000/radar-impacts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ country, skills: selectedSkills }) }),
+            fetch('http://127.0.0.1:5000/radar-future', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ country, skills: selectedSkills }) })
+        ]);
+
+        
+        const riskData = await riskRes.json();
+        const impactData = await impactRes.json();
+        const futureData = await futureRes.json();
+
+      
+        const riskVal = riskData.data ? (riskData.data.match(/\d+/) || [50])[0] : 50;
+        document.getElementById('res-bar').style.width = `${riskVal}%`;
+        document.getElementById('res-percent').innerText = `${riskVal}%`;
+        localStorage.setItem('unmapped_risk', riskVal);
+
+        
+        document.getElementById('res-impacts').innerText = impactData.data || "Analysis unavailable.";
+
+        
+        document.getElementById('res-future').innerText = futureData.data || "Scope unavailable.";
+
+        errDiv.innerText = "";
+    } catch (e) {
+        errDiv.innerText = "Multi-stream connection failed.";
+    }
+
+   }  
+    </script>
+</body>
+</html>

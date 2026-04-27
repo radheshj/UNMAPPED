@@ -1,0 +1,102 @@
+        <!-- UI FOR GROWTH TOOLS -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNMAPPED | Growth Tools</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="logo">UNMAPPED<span>.</span></div>
+            <div class="nav-links"><a href="index.html">Back to Dashboard</a></div>
+        </div>
+    </nav>
+
+    <section class="module-section" style="padding-top: 8rem;">
+        <div class="container">
+            <div class="section-header">
+                <h2>03. Localized Growth Tools</h2>
+                <p>Offline-ready tools to build your daily profile. No API connection required.</p>
+            </div>
+            <div class="tools-grid">
+                
+                <div class="glass-card tool-item">
+                    <i data-lucide="flame"></i>
+                    <h3>Task Tracker</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Log daily tasks. Data saved to local device.</p>
+                    <div class="streak-circle" id="streak-count">0</div>
+                    <button onclick="logStreak()" class="btn-outline" style="width: 100%; justify-content: center;">Log Today's Task</button>
+                    <p id="streak-msg" style="margin-top: 10px; font-size: 0.8rem; color: var(--accent);"></p>
+                </div>
+
+                <div class="glass-card tool-item">
+                    <i data-lucide="calculator"></i>
+                    <h3>Economy Calculator</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Calculate the formal value of informal hours.</p>
+                    <input type="number" id="tools-hours" placeholder="Hours this week" style="width:100%; margin-bottom:10px;">
+                    <input type="number" id="tools-rate" placeholder="Local hourly rate" style="width:100%; margin-bottom:10px;">
+                    <button onclick="calcValue()" class="btn-outline" style="width:100%; justify-content: center;">Calculate</button>
+                    <div id="calc-res" style="margin-top: 15px; font-weight: bold; color: var(--accent);"></div>
+                </div>
+
+                <div class="glass-card tool-item">
+                    <i data-lucide="book-open"></i>
+                    <h3>Offline Work Log</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Keep a local journal of clients or tasks completed.</p>
+                    <textarea id="log-input" placeholder="What did you build/fix today?" style="width: 100%; height: 60px; background: #1a1a1f; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px; font-family: inherit; resize: none; outline: none; margin-bottom: 10px;"></textarea>
+                    <button onclick="saveLog()" class="btn-outline" style="width: 100%; justify-content: center;">Save Entry</button>
+                    <div id="log-history" style="margin-top: 15px; font-size: 0.85rem; color: #aaa; text-align: left; max-height: 80px; overflow-y: auto;"></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        lucide.createIcons();
+        
+        
+        let currentStreak = parseInt(localStorage.getItem('unmapped_streak')) || 0;
+        document.getElementById('streak-count').innerText = currentStreak;
+
+        function logStreak() {
+            currentStreak++;
+            localStorage.setItem('unmapped_streak', currentStreak);
+            document.getElementById('streak-count').innerText = currentStreak;
+            document.getElementById('streak-msg').innerText = "Logged!";
+        }
+
+        
+        function calcValue() {
+            const h = document.getElementById('tools-hours').value;
+            const r = document.getElementById('tools-rate').value;
+            if (h && r) document.getElementById('calc-res').innerText = `Value: ${(h * r).toLocaleString()}`;
+        }
+
+       
+        let logs = JSON.parse(localStorage.getItem('unmapped_logs')) || [];
+        renderLogs();
+
+        function saveLog() {
+            const input = document.getElementById('log-input').value;
+            if(!input) return;
+            const date = new Date().toLocaleDateString();
+            logs.unshift(`[${date}] ${input}`);
+            if(logs.length > 5) logs.pop(); 
+            localStorage.setItem('unmapped_logs', JSON.stringify(logs));
+            document.getElementById('log-input').value = '';
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const hist = document.getElementById('log-history');
+            hist.innerHTML = logs.map(l => `<div style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 5px;">${l}</div>`).join('');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+        <!-- UI SKELETON (MAIN ENTRY POINT) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNMAPPED | Global Skills Infrastructure</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        
+        .stat-box {
+            background: #1a1a1f;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-box h4 { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .stat-box .value { font-size: 2.5rem; font-weight: 800; color: var(--accent); line-height: 1; }
+        
+        .gateway-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .gateway-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: 0.4s;
+            display: block;
+        }
+        .gateway-card:hover { transform: translateY(-10px); border-color: var(--accent); background: #111; }
+        .gateway-card i { width: 50px; height: 50px; color: var(--accent); margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="glass-nav">
+        <div class="nav-content">
+            <div class="logo" style="font-size: 1.6rem;">UNMAPPED<span>.</span></div>
+            <div class="nav-links">
+                <a href="#profile-section">My Profile</a>
+                <a href="radar.html">AI Radar</a>
+                <a href="tools.html">Growth Tools</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section" style="padding-top: 10rem; padding-bottom: 4rem;">
+        <div class="container">
+            <span class="badge">World Bank Youth Summit presents</span>
+            <h1 style="font-size: 5rem; margin-bottom: 1rem;">Visible Talent.<br><span class="gradient-text">Mapped Opportunity.</span></h1>
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; color: var(--text-dim);">
+                Over 600 million young people have real skills that remain economically invisible. UNMAPPED is the global infrastructure layer turning informal experience into formal, AI-resilient power.
+            </p>
+        </div>
+    </section>
+
+    <section id="profile-section" class="module-section alt-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2>Talent Profile Dashboard</h2>
+                <p>Your centralized hub for identity and skill verification.</p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="glass-card">
+                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
+                        <div style="width: 100px; height: 100px; background: linear-gradient(135deg, var(--accent), #7000ff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; margin-bottom: 1rem;" id="avatar-letter">U</div>
+                    </div>
+                    
+                    <label style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 5px; display: block;">Full Name</label>
+                    <input type="text" id="prof-name" placeholder="e.g. Amara Okafor" onchange="saveProfile()" style="width: 100%; margin-bottom: 15px;">
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 1;">
+                            <label style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 5px; display: block;">Age</label>
+                            <input type="number" id="prof-age" placeholder="22" onchange="saveProfile()" style="width: 100%;">
+                        </div>
+                        <div style="flex: 2;">
+                            <label style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 5px; display: block;">Location</label>
+                            <input type="text" id="prof-loc" placeholder="City, Country" onchange="saveProfile()" style="width: 100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3 style="margin-bottom: 1.5rem;">Infrastructure Analytics</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="stat-box">
+                            <h4>Mapped Skills</h4>
+                            <div class="value" id="prof-skill-count">0</div>
+                        </div>
+                        <div class="stat-box" style="border-color: #ff3366;">
+                            <h4 style="color: #ff3366;">AI Exposure Risk</h4>
+                            <div class="value" id="prof-risk" style="color: #ff3366;">--</div>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 1.5rem; text-align: center;">
+                        *AI Exposure is calculated on the <a href="radar.html" style="color: var(--accent);">Radar Page</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="engine" class="module-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>01. Skills Signal Engine</h2>
+                <p>Enter any informal task. Our AI maps it to the official ISCO-08 Global Standard and saves it to your portfolio.</p>
+            </div>
+            <div class="interaction-card glass">
+                <div class="input-container">
+                    <input type="text" id="skill-input" placeholder="What do you do? (e.g. Fix broken mobile screens, street vending...)">
+                    <button onclick="mapSkill()"><i data-lucide="zap"></i> Add Skill</button>
+                </div>
+                <div id="mapping-result"></div>
+                
+                <div id="skillset-report" style="margin-top: 3rem;">
+                    <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px;">Your Verified Portfolio</h3>
+                    <ul id="portfolio-list" style="list-style: none; padding: 0; display: grid; gap: 15px;">
+                        </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="module-section alt-bg" style="padding-bottom: 8rem;">
+        <div class="container">
+            <div class="section-header" style="text-align: center;">
+                <h2>Expand Your Infrastructure</h2>
+                <p>Analyze your portfolio or track your daily growth.</p>
+            </div>
+            
+            <div class="gateway-grid">
+                <a href="radar.html" class="gateway-card">
+                    <i data-lucide="radar"></i>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 10px;">AI Resilience Radar</h2>
+                    <p style="color: var(--text-dim);">Generate a 3-part predictive report on how AI will impact your specific mapped skills.</p>
+                </a>
+                
+                <a href="tools.html" class="gateway-card">
+                    <i data-lucide="trending-up"></i>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Offline Growth Tools</h2>
+                    <p style="color: var(--text-dim);">Access localized calculators, task trackers, and offline work journals.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 3rem; background: #050505; border-top: 1px solid var(--border); color: #555; font-size: 0.9rem;">
+        UNMAPPED | Built for the Hacknation Global AI Hackathon 2026
+    </footer>
+
+    <script>
+    lucide.createIcons();
+    
+
+    let userSkills = [];
+    try {
+        const stored = localStorage.getItem('unmapped_skills');
+        userSkills = stored ? JSON.parse(stored) : [];
+        
+        if (!Array.isArray(userSkills)) userSkills = []; 
+    } catch(e) {
+        userSkills = [];
+    }
+
+    
+    window.onload = function() {
+        const nameField = document.getElementById('prof-name');
+        nameField.value = localStorage.getItem('unmapped_name') || '';
+        document.getElementById('prof-age').value = localStorage.getItem('unmapped_age') || '';
+        document.getElementById('prof-loc').value = localStorage.getItem('unmapped_loc') || '';
+        
+        if(nameField.value) document.getElementById('avatar-letter').innerText = nameField.value.charAt(0).toUpperCase();
+
+        const savedRisk = localStorage.getItem('unmapped_risk');
+        document.getElementById('prof-risk').innerText = savedRisk ? savedRisk + '%' : '--';
+        
+        renderPortfolio();
+        
+    
+        document.getElementById('prof-name').addEventListener('input', saveProfile);
+        document.getElementById('prof-age').addEventListener('input', saveProfile);
+        document.getElementById('prof-loc').addEventListener('input', saveProfile);
+    };
+
+    
+    function saveProfile() {
+        const name = document.getElementById('prof-name').value;
+        localStorage.setItem('unmapped_name', name);
+        localStorage.setItem('unmapped_age', document.getElementById('prof-age').value);
+        localStorage.setItem('unmapped_loc', document.getElementById('prof-loc').value);
+        
+        if(name) {
+            document.getElementById('avatar-letter').innerText = name.charAt(0).toUpperCase();
+        } else {
+            document.getElementById('avatar-letter').innerText = "U";
+        }
+    }
+
+    
+    async function mapSkill() {
+        const input = document.getElementById('skill-input').value;
+        const resArea = document.getElementById('mapping-result');
+        if (!input) return;
+
+        resArea.innerHTML = `<div style="margin-top: 15px; color: var(--accent);"><i data-lucide="loader"></i> Translating to Global Standards...</div>`;
+        lucide.createIcons();
+
+        try {
+            console.log("Sending request to Python backend...");
+            const response = await fetch('http://127.0.0.1:5000/map-signal', {
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ skill: input })
+            });
+            const result = await response.json();
+            console.log("Response received:", result);
+
+            if (result.status === "success") {
+                const text = result.data;
+                const titleMatch = text.match(/ISCO_TITLE:\s*(.*)/i);
+                const codeMatch = text.match(/ISCO_CODE:\s*(.*)/i);
+                
+                const formalTitle = titleMatch ? titleMatch[1].trim() : input;
+                const formalCode = codeMatch ? codeMatch[1].trim() : "Verified";
+
+                userSkills.push({ raw: input, formal: formalTitle, code: formalCode });
+                localStorage.setItem('unmapped_skills', JSON.stringify(userSkills));
+                localStorage.removeItem('unmapped_risk');
+                document.getElementById('prof-risk').innerText = 'Recalculate';
+                
+                document.getElementById('skill-input').value = '';
+                resArea.innerHTML = '';
+                renderPortfolio();
+
+                
+                document.getElementById('skill-input').value = '';
+                resArea.innerHTML = '';
+                renderPortfolio();
+            } else {
+                resArea.innerHTML = `<div style="color: #ff3366;">Error: ${result.message || 'API failed'}</div>`;
+            }
+        } catch (e) {
+            console.error("Fetch error:", e);
+            resArea.innerHTML = `<div style="color: #ff3366;">Error: Ensure your Python server (app.py) is running.</div>`;
+        }
+    }
+
+    
+    function renderPortfolio() {
+        const list = document.getElementById('portfolio-list');
+        list.innerHTML = "";
+        document.getElementById('prof-skill-count').innerText = userSkills.length;
+        
+        if (userSkills.length === 0) {
+            list.innerHTML = `<li style="color: var(--text-dim); text-align: center; padding: 2rem; border: 1px dashed var(--border); border-radius: 12px;">Your portfolio is empty. Map a skill above.</li>`;
+            return;
+        }
+
+        userSkills.forEach((skill, index) => {
+            list.innerHTML += `
+                <li style="background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; transition: 0.3s;">
+                    <div>
+                        <strong style="font-size: 1.1rem; color: white;">${skill.formal}</strong> 
+                        <span style="color: var(--accent); font-size: 0.85rem; margin-left: 10px; padding: 3px 8px; background: rgba(0, 242, 255, 0.1); border-radius: 4px;">ISCO: ${skill.code}</span>
+                        <div style="color:var(--text-dim); font-size:0.9rem; margin-top: 5px;">Informal Context: "${skill.raw}"</div>
+                    </div>
+                    <button onclick="removeSkill(${index})" class="btn-outline" style="border-color: #ff3366; color: #ff3366; padding: 8px 15px;">Delete</button>
+                </li>
+            `;
+        });
+    }
+
+    
+    function removeSkill(index) {
+        userSkills.splice(index, 1);
+        localStorage.setItem('unmapped_skills', JSON.stringify(userSkills));
+        
+        
+        localStorage.removeItem('unmapped_risk');
+        
+        
+        if (userSkills.length === 0) {
+            document.getElementById('prof-risk').innerText = '--';
+        } else {
+            document.getElementById('prof-risk').innerText = 'Recalculate';
+        }
+
+        renderPortfolio();
+    }
+</script>
